@@ -81,12 +81,12 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #ec4899;
+  background: #3D5EA5;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #be185d;
+  background: #2E3A42;
 }
 
 /* Dark mode scrollbar */
@@ -95,12 +95,12 @@ body {
 }
 
 .dark ::-webkit-scrollbar-thumb {
-  background: #ec4899;
+  background: #3D5EA5;
 }
 
 /* Selection */
 ::selection {
-  background: #ec4899;
+  background: #3D5EA5;
   color: white;
 }
 
@@ -141,7 +141,7 @@ body {
 
 /* Gradient text */
 .gradient-text {
-  background: linear-gradient(to right, #ec4899, #8b5cf6);
+  background: linear-gradient(to right, #3D5EA5, #2E3A42);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

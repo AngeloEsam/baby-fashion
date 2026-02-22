@@ -130,7 +130,7 @@ export function CheckoutForm({ onClose, onSuccess }: CheckoutFormProps) {
                   <span className="text-gray-600 dark:text-gray-300">
                     {language === 'ar' ? item.product.nameAr : item.product.nameEn} ({item.size}) x{item.quantity}
                   </span>
-                  <span className="text-pink-600 dark:text-pink-400 font-medium">
+                  <span className="text-[#3D5EA5] dark:text-[#7B9FD4] font-medium">
                     {item.product.price * item.quantity} {language === 'ar' ? 'ج.م' : 'EGP'}
                   </span>
                 </div>
@@ -138,7 +138,7 @@ export function CheckoutForm({ onClose, onSuccess }: CheckoutFormProps) {
             </div>
             <div className="mt-3 pt-3 border-t dark:border-gray-700 flex justify-between">
               <span className="font-bold text-gray-800 dark:text-white">{t('total')}:</span>
-              <span className="font-bold text-pink-600 dark:text-pink-400 text-xl">
+              <span className="font-bold text-[#3D5EA5] dark:text-[#7B9FD4] text-xl">
                 {cartTotal} {language === 'ar' ? 'ج.م' : 'EGP'}
               </span>
             </div>
@@ -155,7 +155,7 @@ export function CheckoutForm({ onClose, onSuccess }: CheckoutFormProps) {
                 required
                 value={formData.customerName}
                 onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-[#3D5EA5] focus:border-transparent transition-colors"
                 placeholder={language === 'ar' ? 'أدخل اسمك الكامل' : 'Enter your full name'}
               />
             </div>
@@ -169,7 +169,7 @@ export function CheckoutForm({ onClose, onSuccess }: CheckoutFormProps) {
                 required
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-[#3D5EA5] focus:border-transparent transition-colors"
                 placeholder={language === 'ar' ? 'أدخل رقم تليفونك' : 'Enter your phone number'}
               />
             </div>
@@ -183,7 +183,7 @@ export function CheckoutForm({ onClose, onSuccess }: CheckoutFormProps) {
                 rows={3}
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors resize-none"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-[#3D5EA5] focus:border-transparent transition-colors resize-none"
                 placeholder={language === 'ar' ? 'أدخل العنوان بالتفصيل' : 'Enter your address in detail'}
               />
             </div>
@@ -196,7 +196,7 @@ export function CheckoutForm({ onClose, onSuccess }: CheckoutFormProps) {
                 rows={2}
                 value={formData.notes}
                 onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-pink-500 focus:border-transparent transition-colors resize-none"
+                className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl bg-white dark:bg-gray-800 text-gray-800 dark:text-white focus:ring-2 focus:ring-[#3D5EA5] focus:border-transparent transition-colors resize-none"
                 placeholder={language === 'ar' ? 'أي ملاحظات خاصة' : 'Any special notes'}
               />
             </div>
@@ -219,7 +219,7 @@ export function CheckoutForm({ onClose, onSuccess }: CheckoutFormProps) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-gradient-to-r from-pink-500 to-violet-500 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-4 bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] text-white font-bold rounded-xl hover:shadow-lg hover:shadow-[#3D5EA5]/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>

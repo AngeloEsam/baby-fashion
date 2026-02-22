@@ -28,6 +28,7 @@ export function ProductCard({ product, onProductClick }: ProductCardProps) {
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
+    if (!product.inStock) return;
     if (!selectedSize) {
       setShowSizeAlert(true);
       setTimeout(() => setShowSizeAlert(false), 2000);
@@ -72,9 +73,13 @@ export function ProductCard({ product, onProductClick }: ProductCardProps) {
         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <button
             onClick={handleAddToCart}
-            className="px-6 py-3 bg-white text-pink-600 font-semibold rounded-full transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-pink-50"
+            disabled={!product.inStock}
+            className={`px-6 py-3 font-semibold rounded-full transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300 ${product.inStock
+                ? 'bg-white text-[#3D5EA5] hover:bg-[#E4DFCA]'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              }`}
           >
-            {t('addToCart')}
+            {product.inStock ? t('addToCart') : t('outOfStock')}
           </button>
         </div>
       </div>
@@ -87,7 +92,7 @@ export function ProductCard({ product, onProductClick }: ProductCardProps) {
 
         {/* Price */}
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-2xl font-bold text-pink-600 dark:text-pink-400">
+          <span className="text-2xl font-bold text-[#3D5EA5] dark:text-[#7B9FD4]">
             {product.price} {language === 'ar' ? 'ج.م' : 'EGP'}
           </span>
           {product.isSale && product.originalPrice && product.originalPrice > product.price && (
@@ -108,8 +113,8 @@ export function ProductCard({ product, onProductClick }: ProductCardProps) {
                 key={size}
                 onClick={() => setSelectedSize(size)}
                 className={`px-2 py-1 text-xs rounded-lg transition-colors ${selectedSize === size
-                  ? 'bg-pink-500 text-white'
-                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-pink-100 dark:hover:bg-pink-900/30'
+                  ? 'bg-[#3D5EA5] text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-[#E4DFCA] dark:hover:bg-[#3D5EA5]/30'
                   }`}
               >
                 {size}
@@ -122,7 +127,7 @@ export function ProductCard({ product, onProductClick }: ProductCardProps) {
         <button
           onClick={handleAddToCart}
           disabled={!product.inStock}
-          className="w-full py-3 bg-gradient-to-r from-pink-500 to-violet-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full py-3 bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-[#3D5EA5]/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
         >
           {product.inStock ? t('addToCart') : t('outOfStock')}
         </button>

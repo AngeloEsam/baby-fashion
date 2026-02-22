@@ -57,7 +57,7 @@ export function ProductsSection({ onProductClick }: ProductsSectionProps) {
       <section id="products" className="py-20 bg-gray-50 dark:bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center h-64">
-            <div className="w-12 h-12 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-12 h-12 border-4 border-[#3D5EA5] border-t-transparent rounded-full animate-spin"></div>
           </div>
         </div>
       </section>
@@ -72,7 +72,7 @@ export function ProductsSection({ onProductClick }: ProductsSectionProps) {
             <p className="text-red-500 text-lg mb-4">{error}</p>
             <button
               onClick={fetchProducts}
-              className="px-6 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition-colors"
+              className="px-6 py-2 bg-[#3D5EA5] text-white rounded-full hover:bg-[#2E3A42] transition-colors"
             >
               {language === 'ar' ? 'إعادة المحاولة' : 'Try Again'}
             </button>
@@ -91,7 +91,7 @@ export function ProductsSection({ onProductClick }: ProductsSectionProps) {
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white mb-4">
             {t('allProducts')}
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-pink-500 to-violet-500 mx-auto rounded-full"></div>
+          <div className="w-24 h-1 bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] mx-auto rounded-full"></div>
         </div>
 
         {/* Category Filter */}
@@ -101,8 +101,8 @@ export function ProductsSection({ onProductClick }: ProductsSectionProps) {
               key={category}
               onClick={() => setSelectedCategory(category)}
               className={`px-5 py-2 rounded-full font-medium transition-all duration-300 ${selectedCategory === category
-                ? 'bg-gradient-to-r from-pink-500 to-violet-500 text-white shadow-lg shadow-pink-500/30'
-                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-pink-100 dark:hover:bg-pink-900/20'
+                ? 'bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] text-white shadow-lg shadow-[#3D5EA5]/30'
+                : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-[#E4DFCA] dark:hover:bg-[#3D5EA5]/20'
                 }`}
             >
               {t(category)}

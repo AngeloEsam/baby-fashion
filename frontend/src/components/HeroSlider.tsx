@@ -62,7 +62,7 @@ export function HeroSlider() {
           <div className="relative h-full flex items-center">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
               <div className="max-w-xl animate-fade-in-up">
-                <span className="inline-block px-4 py-1 bg-pink-500 text-white text-sm font-medium rounded-full mb-4">
+                <span className="inline-block px-4 py-1 bg-[#3D5EA5] text-white text-sm font-medium rounded-full mb-4">
                   {slide.subtitle[language]}
                 </span>
                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
@@ -70,7 +70,7 @@ export function HeroSlider() {
                 </h1>
                 <button
                   onClick={scrollToProducts}
-                  className="px-8 py-4 bg-gradient-to-r from-pink-500 to-violet-500 text-white font-semibold rounded-full hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-300 transform hover:scale-105"
+                  className="px-8 py-4 bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] text-white font-semibold rounded-full hover:shadow-lg hover:shadow-[#3D5EA5]/30 transition-all duration-300 transform hover:scale-105"
                 >
                   {slide.cta[language]}
                 </button>
@@ -87,7 +87,7 @@ export function HeroSlider() {
             key={index}
             onClick={() => setCurrentSlide(index)}
             className={`w-3 h-3 rounded-full transition-all duration-300 ${index === currentSlide
-              ? 'bg-pink-500 w-8'
+              ? 'bg-[#3D5EA5] w-8'
               : 'bg-white/50 hover:bg-white/80'
               }`}
           />

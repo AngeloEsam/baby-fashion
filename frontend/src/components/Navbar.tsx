@@ -20,33 +20,28 @@ export function Navbar({ onCartClick, onHomeClick }: {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center gap-2 cursor-pointer" onClick={onHomeClick}>
-            <span className="text-2xl">👶</span>
-            <span className="text-xl font-bold bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
-              {trans.shopName}
-            </span>
+            <img src="/assets/trois.png" alt={trans.shopName} className="h-10 w-auto" />
           </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-6">
-            <button onClick={onHomeClick} className="text-gray-700 dark:text-gray-200 hover:text-pink-500 transition-colors">
+            <button onClick={onHomeClick} className="text-gray-700 dark:text-gray-200 hover:text-[#3D5EA5] transition-colors">
               {t('home')}
             </button>
-            <a href="#products" className="text-gray-700 dark:text-gray-200 hover:text-pink-500 transition-colors">
+            <a href="#products" className="text-gray-700 dark:text-gray-200 hover:text-[#3D5EA5] transition-colors">
               {t('products')}
             </a>
-            <a href="#contact" className="text-gray-700 dark:text-gray-200 hover:text-pink-500 transition-colors">
+            <a href="#contact" className="text-gray-700 dark:text-gray-200 hover:text-[#3D5EA5] transition-colors">
               {t('contact')}
             </a>
           </div>
-
-          {/* Actions ... (remaining code unchanged) */}
 
           {/* Actions */}
           <div className="flex items-center gap-3">
             {/* Language Toggle */}
             <button
               onClick={() => setLanguage(language === 'ar' ? 'en' : 'ar')}
-              className="px-3 py-1.5 text-sm font-medium text-pink-600 dark:text-pink-400 hover:bg-pink-50 dark:hover:bg-pink-900/20 rounded-lg transition-colors"
+              className="px-3 py-1.5 text-sm font-medium text-[#3D5EA5] dark:text-[#7B9FD4] hover:bg-[#E4DFCA]/50 dark:hover:bg-[#3D5EA5]/20 rounded-lg transition-colors"
             >
               {language === 'ar' ? 'EN' : 'عربي'}
             </button>
@@ -62,13 +57,13 @@ export function Navbar({ onCartClick, onHomeClick }: {
             {/* Cart */}
             <button
               onClick={onCartClick}
-              className="relative p-2 rounded-lg bg-pink-100 dark:bg-pink-900/30 text-pink-600 dark:text-pink-400 hover:bg-pink-200 dark:hover:bg-pink-900/50 transition-colors"
+              className="relative p-2 rounded-lg bg-[#E4DFCA]/50 dark:bg-[#3D5EA5]/20 text-[#3D5EA5] dark:text-[#7B9FD4] hover:bg-[#E4DFCA] dark:hover:bg-[#3D5EA5]/30 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-xs rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-[#3D5EA5] text-white text-xs rounded-full flex items-center justify-center">
                   {cartCount}
                 </span>
               )}

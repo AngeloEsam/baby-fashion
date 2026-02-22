@@ -47,7 +47,7 @@ export function ProductDetail({ product, onBack }: ProductDetailProps) {
                 {/* Back Button */}
                 <button
                     onClick={onBack}
-                    className="group flex items-center gap-2 mb-8 px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-pink-500 dark:hover:text-pink-400 transition-colors rounded-xl hover:bg-white dark:hover:bg-gray-800 shadow-sm hover:shadow-md"
+                    className="group flex items-center gap-2 mb-8 px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-[#3D5EA5] dark:hover:text-[#7B9FD4] transition-colors rounded-xl hover:bg-white dark:hover:bg-gray-800 shadow-sm hover:shadow-md"
                 >
                     <svg
                         className="w-5 h-5 transition-transform group-hover:-translate-x-1"
@@ -95,7 +95,7 @@ export function ProductDetail({ product, onBack }: ProductDetailProps) {
                                         className={clsx(
                                             "relative aspect-[4/5] rounded-xl overflow-hidden border-2 transition-all duration-300",
                                             selectedImage === index
-                                                ? "border-pink-500 scale-95 shadow-lg"
+                                                ? "border-[#3D5EA5] scale-95 shadow-lg"
                                                 : "border-transparent hover:border-gray-200"
                                         )}
                                     >
@@ -127,7 +127,7 @@ export function ProductDetail({ product, onBack }: ProductDetailProps) {
 
                         {/* Price Section */}
                         <div className="flex items-baseline gap-4 p-4 bg-white dark:bg-gray-800 rounded-2xl shadow-sm">
-                            <span className="text-4xl font-bold text-pink-600 dark:text-pink-400">
+                            <span className="text-4xl font-bold text-[#3D5EA5] dark:text-[#7B9FD4]">
                                 {product.price} {language === 'ar' ? 'ج.م' : 'EGP'}
                             </span>
                             {product.isSale && product.originalPrice && product.originalPrice > product.price && (
@@ -153,8 +153,8 @@ export function ProductDetail({ product, onBack }: ProductDetailProps) {
                                         key={size}
                                         onClick={() => setSelectedSize(size)}
                                         className={`px-5 py-2.5 text-sm font-medium rounded-xl transition-all duration-300 ${selectedSize === size
-                                            ? 'bg-gradient-to-r from-pink-500 to-violet-500 text-white shadow-lg shadow-pink-500/30 scale-105'
-                                            : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-pink-300 dark:hover:border-pink-600 hover:bg-pink-50 dark:hover:bg-pink-900/20'
+                                            ? 'bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] text-white shadow-lg shadow-[#3D5EA5]/30 scale-105'
+                                            : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:border-[#3D5EA5]/50 dark:hover:border-[#3D5EA5] hover:bg-[#E4DFCA]/30 dark:hover:bg-[#3D5EA5]/20'
                                             }`}
                                     >
                                         {size}
@@ -169,7 +169,7 @@ export function ProductDetail({ product, onBack }: ProductDetailProps) {
                             disabled={!product.inStock}
                             className={`w-full py-4 text-lg font-bold rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] ${addedToCart
                                 ? 'bg-green-500 text-white shadow-lg shadow-green-500/30'
-                                : 'bg-gradient-to-r from-pink-500 to-violet-500 text-white shadow-lg shadow-pink-500/30 hover:shadow-xl hover:shadow-pink-500/40'
+                                : 'bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] text-white shadow-lg shadow-[#3D5EA5]/30 hover:shadow-xl hover:shadow-[#3D5EA5]/40'
                                 } disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none`}
                         >
                             {addedToCart

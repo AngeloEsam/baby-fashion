@@ -38,7 +38,47 @@ export function AdminDashboard({ onClose }: AdminDashboardProps) {
     }
   };
 
+  const normalizePhone = (phone: string) => {
+    let cleaned = phone.replace(/[\s\-\(\)]/g, '');
+    if (cleaned.startsWith('0')) {
+      cleaned = '2' + cleaned; // Egypt: 0xxx → 20xxx
+    }
+    if (!cleaned.startsWith('+')) {
+      cleaned = '+' + cleaned;
+    }
+    return cleaned;
+  };
+
+  const getStatusWhatsAppMessage = (order: Order, newStatus: string) => {
+    const shopName = 'Trois Kids';
+    const items = order.items.map(item => `• ${item.name} (${item.size}) × ${item.quantity}`).join('%0A');
+
+    switch (newStatus) {
+      case 'confirmed':
+        return `مرحباً ${order.customerName} 👋%0A%0A` +
+          `✅ *تم تأكيد طلبك من ${shopName}!*%0A%0A` +
+          `🛍️ المنتجات:%0A${items}%0A%0A` +
+          `💰 الإجمالي: ${order.totalAmount} ج.م%0A%0A` +
+          `📍 العنوان: ${order.location}%0A%0A` +
+          `هنتواصل معاك قريب للتوصيل. شكراً لثقتك فينا! 🙏`;
+      case 'delivered':
+        return `مرحباً ${order.customerName} 👋%0A%0A` +
+          `🎉 *تم توصيل طلبك من ${shopName}!*%0A%0A` +
+          `نتمنى يعجبك! لو عندك أي استفسار تواصل معانا.%0A` +
+          `شكراً لتسوقك معانا! ❤️`;
+      case 'cancelled':
+        return `مرحباً ${order.customerName} 👋%0A%0A` +
+          `❌ *للأسف تم إلغاء طلبك من ${shopName}*%0A%0A` +
+          `لو محتاج مساعدة أو عايز تطلب تاني، تواصل معانا في أي وقت.%0A` +
+          `نعتذر عن أي إزعاج 🙏`;
+      default:
+        return '';
+    }
+  };
+
   const updateOrderStatus = async (orderId: string, status: string) => {
+    const order = orders.find(o => o._id === orderId);
+
     try {
       await fetch(`http://localhost:5000/api/orders/${orderId}`, {
         method: 'PATCH',
@@ -48,11 +88,20 @@ export function AdminDashboard({ onClose }: AdminDashboardProps) {
       fetchOrders();
     } catch (error) {
       // Update locally
-      const updatedOrders = orders.map(order =>
-        order._id === orderId ? { ...order, status: status as Order['status'] } : order
+      const updatedOrders = orders.map(o =>
+        o._id === orderId ? { ...o, status: status as Order['status'] } : o
       );
       setOrders(updatedOrders);
       localStorage.setItem('orders', JSON.stringify(updatedOrders));
+    }
+
+    // Auto-open WhatsApp with status message
+    if (order) {
+      const phone = normalizePhone(order.phone);
+      const message = getStatusWhatsAppMessage(order, status);
+      if (message) {
+        window.open(`https://wa.me/${phone.replace('+', '')}?text=${message}`, '_blank');
+      }
     }
   };
 
@@ -87,8 +136,9 @@ export function AdminDashboard({ onClose }: AdminDashboardProps) {
       `%0A━━━━━━━━━━━━━━━━━━━━%0A` +
       `💰 الإجمالي: ${order.totalAmount} ج.م%0A` +
       `📊 الحالة: ${t(order.status)}`;
-    
-    return `https://wa.com/?text=${message}`;
+
+    const phone = normalizePhone(order.phone);
+    return `https://wa.me/${phone.replace('+', '')}?text=${message}`;
   };
 
   return (
@@ -102,7 +152,7 @@ export function AdminDashboard({ onClose }: AdminDashboardProps) {
       {/* Dashboard */}
       <div className="absolute inset-y-0 right-0 max-w-4xl w-full bg-white dark:bg-gray-900 shadow-2xl animate-slide-in-left overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b dark:border-gray-700 bg-gradient-to-r from-pink-500 to-violet-500 text-white">
+        <div className="flex items-center justify-between p-4 border-b dark:border-gray-700 bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] text-white">
           <div className="flex items-center gap-3">
             <span className="text-2xl">⚙️</span>
             <div>
@@ -124,7 +174,7 @@ export function AdminDashboard({ onClose }: AdminDashboardProps) {
         <div className="flex-1 overflow-y-auto p-4">
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="w-12 h-12 border-4 border-pink-500 border-t-transparent rounded-full animate-spin"></div>
+              <div className="w-12 h-12 border-4 border-[#3D5EA5] border-t-transparent rounded-full animate-spin"></div>
             </div>
           ) : orders.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-64 text-center">
@@ -183,7 +233,7 @@ export function AdminDashboard({ onClose }: AdminDashboardProps) {
 
                   {/* Total & Actions */}
                   <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t dark:border-gray-700">
-                    <div className="font-bold text-lg text-pink-600 dark:text-pink-400">
+                    <div className="font-bold text-lg text-[#3D5EA5] dark:text-[#7B9FD4]">
                       {order.totalAmount} {language === 'ar' ? 'ج.م' : 'EGP'}
                     </div>
                     <div className="flex flex-wrap gap-2">

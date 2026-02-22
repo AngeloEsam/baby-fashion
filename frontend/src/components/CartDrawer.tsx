@@ -57,7 +57,7 @@ export function CartDrawer({ isOpen, onClose, onCheckout }: CartDrawerProps) {
                 </p>
                 <button
                   onClick={onClose}
-                  className="mt-4 px-6 py-2 bg-pink-500 text-white rounded-full hover:bg-pink-600 transition-colors"
+                  className="mt-4 px-6 py-2 bg-[#3D5EA5] text-white rounded-full hover:bg-[#2E3A42] transition-colors"
                 >
                   {t('continueShopping')}
                 </button>
@@ -83,7 +83,7 @@ export function CartDrawer({ isOpen, onClose, onCheckout }: CartDrawerProps) {
                     <p className="text-sm text-gray-500 dark:text-gray-400">
                       {t('sizes')}: {item.size}
                     </p>
-                    <p className="text-pink-600 dark:text-pink-400 font-bold">
+                    <p className="text-[#3D5EA5] dark:text-[#7B9FD4] font-bold">
                       {item.product.price} {language === 'ar' ? 'ج.م' : 'EGP'}
                     </p>
                   </div>
@@ -128,13 +128,13 @@ export function CartDrawer({ isOpen, onClose, onCheckout }: CartDrawerProps) {
                 <span className="text-lg font-medium text-gray-600 dark:text-gray-300">
                   {t('total')}:
                 </span>
-                <span className="text-2xl font-bold text-pink-600 dark:text-pink-400">
+                <span className="text-2xl font-bold text-[#3D5EA5] dark:text-[#7B9FD4]">
                   {cartTotal} {language === 'ar' ? 'ج.م' : 'EGP'}
                 </span>
               </div>
               <button
                 onClick={onCheckout}
-                className="w-full py-4 bg-gradient-to-r from-pink-500 to-violet-500 text-white font-bold rounded-xl hover:shadow-lg hover:shadow-pink-500/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full py-4 bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] text-white font-bold rounded-xl hover:shadow-lg hover:shadow-[#3D5EA5]/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {t('checkout')}
               </button>
