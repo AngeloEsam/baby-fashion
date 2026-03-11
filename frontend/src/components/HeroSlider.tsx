@@ -53,6 +53,8 @@ export function HeroSlider() {
             <img
               src={slide.image}
               alt={slide.title[language]}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              decoding="async"
               className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />

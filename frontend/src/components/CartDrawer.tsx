@@ -72,6 +72,8 @@ export function CartDrawer({ isOpen, onClose, onCheckout }: CartDrawerProps) {
                   <img
                     src={getImageUrl(item.product.images[0])}
                     alt={language === 'ar' ? item.product.nameAr : item.product.nameEn}
+                    loading="lazy"
+                    decoding="async"
                     className="w-20 h-20 object-cover rounded-lg"
                   />
 

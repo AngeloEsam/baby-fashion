@@ -9,9 +9,10 @@ export default function App() {
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState(false);
 
-  const [activeTab, setActiveTab] = useState<'orders' | 'products'>('orders');
+  const [activeTab, setActiveTab] = useState<'orders' | 'products' | 'insights'>('orders');
   const [orders, setOrders] = useState<Order[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
+  const [insights, setInsights] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({ totalVisitors: 0, totalOrders: 0, totalSales: 0 });
 
@@ -37,10 +38,16 @@ export default function App() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [deleteConfirm, setDeleteConfirm] = useState<{ id: string, type: 'order' | 'product' } | null>(null);
+  const [orderStatusFilter, setOrderStatusFilter] = useState<'all' | 'pending' | 'confirmed' | 'delivered' | 'cancelled'>('all');
+
+  const filteredOrders = orders.filter(o =>
+    orderStatusFilter === 'all' ? true : o.status === orderStatusFilter
+  );
 
   useEffect(() => {
     if (isLoggedIn) {
-      fetchData();
+      if (activeTab === 'insights') fetchInsights();
+      else fetchData();
     }
   }, [activeTab, isLoggedIn]);
 
@@ -90,6 +97,23 @@ export default function App() {
     const whatsappUrl = `https://wa.me/${phone.startsWith('0') ? '2' + phone : phone}?text=${message}`;
 
     window.open(whatsappUrl, '_blank');
+  };
+
+  const fetchInsights = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_BASE_URL}/analytics/business-insights`, {
+        headers: getAuthHeader() as Record<string, string>
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setInsights(data);
+      }
+    } catch (err) {
+      console.error('Insights fetch error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchData = async () => {
@@ -384,98 +408,257 @@ export default function App() {
             >
               <span>🏷️</span> Products
             </button>
+            <button
+              onClick={() => setActiveTab('insights')}
+              className={clsx(
+                "px-8 py-2.5 rounded-xl font-bold transition-all flex items-center gap-2",
+                activeTab === 'insights' ? "bg-[#3D5EA5] text-white shadow-lg" : "text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-900"
+              )}
+            >
+              <span>📈</span> Insights
+            </button>
           </div>
         </div>
 
         {activeTab === 'orders' ? (
           /* Orders View */
-          <div className="grid gap-6">
-            {loading && orders.length === 0 ? (
+          <div className="space-y-6">
+            {/* ── Order Status Filters ── */}
+            <div className="flex flex-wrap gap-2">
+              {(['all', 'pending', 'confirmed', 'delivered', 'cancelled'] as const).map((status) => {
+                const count = status === 'all' ? orders.length : orders.filter(o => o.status === status).length;
+                const colorMap: Record<string, { active: string; dot: string }> = {
+                  all: { active: 'from-[#3D5EA5] to-[#2E3A42]', dot: 'bg-[#3D5EA5]' },
+                  pending: { active: 'from-yellow-500 to-amber-600', dot: 'bg-yellow-500' },
+                  confirmed: { active: 'from-green-500 to-emerald-600', dot: 'bg-green-500' },
+                  delivered: { active: 'from-blue-500 to-indigo-600', dot: 'bg-blue-500' },
+                  cancelled: { active: 'from-red-500 to-rose-600', dot: 'bg-red-500' },
+                };
+                const c = colorMap[status];
+                const isActive = orderStatusFilter === status;
+                const label = status === 'all' ? 'All' : status.charAt(0).toUpperCase() + status.slice(1);
+                return (
+                  <button
+                    key={status}
+                    onClick={() => setOrderStatusFilter(status)}
+                    className={clsx(
+                      'px-4 py-2 rounded-xl font-bold text-sm transition-all flex items-center gap-2 border',
+                      isActive
+                        ? `bg-gradient-to-r ${c.active} text-white shadow-lg border-transparent`
+                        : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:shadow-md'
+                    )}
+                  >
+                    {!isActive && <span className={`w-2 h-2 rounded-full ${c.dot}`} />}
+                    {label}
+                    <span className={clsx(
+                      'min-w-[20px] h-5 flex items-center justify-center text-[10px] font-black rounded-full px-1',
+                      isActive ? 'bg-white/25 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400'
+                    )}>
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="grid gap-6">
+              {loading && orders.length === 0 ? (
+                <div className="h-64 flex items-center justify-center">
+                  <div className="w-10 h-10 border-4 border-[#3D5EA5] border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : filteredOrders.length === 0 ? (
+                <div className="bg-white dark:bg-gray-800 p-20 rounded-4xl text-center shadow-sm">
+                  <span className="text-6xl grayscale">🏜️</span>
+                  <h3 className="text-xl font-bold mt-4 text-gray-400">
+                    {orders.length === 0 ? 'No orders found' : 'No orders with this status'}
+                  </h3>
+                  {orders.length > 0 && (
+                    <button
+                      onClick={() => setOrderStatusFilter('all')}
+                      className="mt-3 text-sm text-[#3D5EA5] hover:underline font-medium"
+                    >
+                      Show all orders
+                    </button>
+                  )}
+                </div>
+              ) : (
+                filteredOrders.map(order => (
+                  <div key={order._id} className="bg-white dark:bg-gray-800 rounded-4xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
+                    <div className="flex flex-wrap justify-between items-start gap-6 border-b dark:border-gray-700 pb-6 mb-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 bg-[#3D5EA5]/10 dark:bg-[#3D5EA5]/20 rounded-2xl flex items-center justify-center text-2xl">👤</div>
+                        <div>
+                          <h3 className="text-lg font-bold text-gray-900 dark:text-white">{order.customerName}</h3>
+                          <p className="text-gray-500 text-sm flex items-center gap-2">
+                            <span>📞 {order.phone}</span>
+                            <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                            <span>📍 {order.location}</span>
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <select
+                          value={order.status}
+                          onChange={(e) => handleUpdateOrderStatus(order._id, e.target.value)}
+                          className={clsx(
+                            "px-4 py-2 rounded-xl border-2 outline-none font-bold text-sm transition-all dark:bg-gray-900",
+                            order.status === 'pending' && "border-yellow-200 text-yellow-600 bg-yellow-50",
+                            order.status === 'confirmed' && "border-green-200 text-green-600 bg-green-50",
+                            order.status === 'delivered' && "border-blue-200 text-blue-600 bg-blue-50",
+                            order.status === 'cancelled' && "border-red-200 text-red-600 bg-red-50"
+                          )}
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="confirmed">Confirmed</option>
+                          <option value="delivered">Delivered</option>
+                          <option value="cancelled">Cancelled</option>
+                        </select>
+                        <button
+                          onClick={() => handleNotifyCustomer(order)}
+                          title="Notify Customer via WhatsApp"
+                          className="p-3 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors"
+                        >
+                          💬
+                        </button>
+                        <button
+                          onClick={() => setDeleteConfirm({ id: order._id, type: 'order' })}
+                          className="p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
+                    <div className="space-y-4">
+                      {order.items.map((item: { image: string; name: string; size: string; quantity: number; price: number; }, idx) => (
+                        <div key={idx} className="flex items-center gap-4 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-2xl">
+                          <img src={getImageUrl(item.image)} loading="lazy" decoding="async" className="w-16 h-16 rounded-xl object-cover shadow-sm" />
+                          <div className="flex-1">
+                            <h4 className="font-bold text-gray-800 dark:text-gray-200">{item.name}</h4>
+                            <div className="flex gap-4 mt-1">
+                              <span className="text-xs px-2 py-0.5 bg-white dark:bg-gray-800 rounded-lg text-gray-500">Size: {item.size}</span>
+                              <span className="text-xs px-2 py-0.5 bg-white dark:bg-gray-800 rounded-lg text-gray-500">Qty: {item.quantity}</span>
+                            </div>
+                          </div>
+                          <p className="text-lg font-black text-[#3D5EA5]">{item.price * item.quantity} EGP</p>
+                        </div>
+                      ))}
+                    </div>
+                    {order.notes && (
+                      <div className="mt-4 p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-400 text-sm border border-blue-100 dark:border-blue-900/30">
+                        <strong className="block mb-1">💡 Notes from customer:</strong>
+                        {order.notes}
+                      </div>
+                    )}
+                    <div className="mt-6 pt-6 border-t dark:border-gray-700 flex justify-between items-center text-gray-500 text-sm">
+                      <span>Ordered on {new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString()}</span>
+                      <div className="text-right">
+                        <span className="block text-xs uppercase font-bold tracking-widest text-gray-400">Total Charged</span>
+                        <span className="text-3xl font-black text-[#3D5EA5] leading-none">{order.totalAmount} EGP</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        ) : activeTab === 'insights' ? (
+          /* Insights View */
+          <div className="space-y-8 animate-fade-in">
+            {loading && !insights ? (
               <div className="h-64 flex items-center justify-center">
                 <div className="w-10 h-10 border-4 border-[#3D5EA5] border-t-transparent rounded-full animate-spin"></div>
               </div>
-            ) : orders.length === 0 ? (
-              <div className="bg-white dark:bg-gray-800 p-20 rounded-4xl text-center shadow-sm">
-                <span className="text-6xl grayscale">🏜️</span>
-                <h3 className="text-xl font-bold mt-4 text-gray-400">No orders found</h3>
-              </div>
-            ) : (
-              orders.map(order => (
-                <div key={order._id} className="bg-white dark:bg-gray-800 rounded-4xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 hover:shadow-md transition-shadow">
-                  <div className="flex flex-wrap justify-between items-start gap-6 border-b dark:border-gray-700 pb-6 mb-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-[#3D5EA5]/10 dark:bg-[#3D5EA5]/20 rounded-2xl flex items-center justify-center text-2xl">👤</div>
-                      <div>
-                        <h3 className="text-lg font-bold text-gray-900 dark:text-white">{order.customerName}</h3>
-                        <p className="text-gray-500 text-sm flex items-center gap-2">
-                          <span>📞 {order.phone}</span>
-                          <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                          <span>📍 {order.location}</span>
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <select
-                        value={order.status}
-                        onChange={(e) => handleUpdateOrderStatus(order._id, e.target.value)}
-                        className={clsx(
-                          "px-4 py-2 rounded-xl border-2 outline-none font-bold text-sm transition-all dark:bg-gray-900",
-                          order.status === 'pending' && "border-yellow-200 text-yellow-600 bg-yellow-50",
-                          order.status === 'confirmed' && "border-green-200 text-green-600 bg-green-50",
-                          order.status === 'delivered' && "border-blue-200 text-blue-600 bg-blue-50",
-                          order.status === 'cancelled' && "border-red-200 text-red-600 bg-red-50"
-                        )}
-                      >
-                        <option value="pending">Pending</option>
-                        <option value="confirmed">Confirmed</option>
-                        <option value="delivered">Delivered</option>
-                        <option value="cancelled">Cancelled</option>
-                      </select>
-                      <button
-                        onClick={() => handleNotifyCustomer(order)}
-                        title="Notify Customer via WhatsApp"
-                        className="p-3 text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded-xl transition-colors"
-                      >
-                        💬
-                      </button>
-                      <button
-                        onClick={() => setDeleteConfirm({ id: order._id, type: 'order' })}
-                        className="p-3 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors"
-                      >
-                        🗑️
-                      </button>
+            ) : insights ? (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Daily Status Card */}
+                <div className="lg:col-span-2 bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center gap-4 mb-6">
+                    <div className="w-12 h-12 bg-blue-50 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center text-2xl">📅</div>
+                    <div>
+                      <h3 className="text-xl font-black text-gray-800 dark:text-white">Daily Performance</h3>
+                      <p className="text-gray-500 text-sm">Real-time orders for today</p>
                     </div>
                   </div>
-                  <div className="space-y-4">
-                    {order.items.map((item: { image: string; name: string; size: string; quantity: number; price: number; }, idx) => (
-                      <div key={idx} className="flex items-center gap-4 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-2xl">
-                        <img src={getImageUrl(item.image)} className="w-16 h-16 rounded-xl object-cover shadow-sm" />
-                        <div className="flex-1">
-                          <h4 className="font-bold text-gray-800 dark:text-gray-200">{item.name}</h4>
-                          <div className="flex gap-4 mt-1">
-                            <span className="text-xs px-2 py-0.5 bg-white dark:bg-gray-800 rounded-lg text-gray-500">Size: {item.size}</span>
-                            <span className="text-xs px-2 py-0.5 bg-white dark:bg-gray-800 rounded-lg text-gray-500">Qty: {item.quantity}</span>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div className="bg-gray-50 dark:bg-gray-900/50 p-6 rounded-3xl text-center">
+                      <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Orders Today</p>
+                      <h4 className="text-4xl font-black text-[#3D5EA5]">{insights.ordersToday}</h4>
+                    </div>
+                    <div className="lg:col-span-2 bg-gray-50 dark:bg-gray-900/50 p-6 rounded-3xl">
+                      <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-4">7-Day Trend</p>
+                      <div className="flex items-end justify-between h-24 gap-2">
+                        {insights.dailyOrders.map((d: any) => (
+                          <div key={d._id} className="flex-1 flex flex-col items-center group">
+                            <div 
+                              className="w-full bg-[#3D5EA5] rounded-t-lg transition-all duration-500 group-hover:bg-[#2E3A42] relative"
+                              style={{ height: `${(d.count / (Math.max(...insights.dailyOrders.map((x:any)=>x.count)) || 1)) * 100}%` }}
+                            >
+                               <span className="absolute -top-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity">{d.count}</span>
+                            </div>
+                            <span className="text-[8px] font-bold text-gray-400 mt-2 uppercase">{new Date(d._id).toLocaleDateString(undefined, {weekday: 'short'})}</span>
                           </div>
-                        </div>
-                        <p className="text-lg font-black text-[#3D5EA5]">{item.price * item.quantity} EGP</p>
+                        ))}
                       </div>
-                    ))}
-                  </div>
-                  {order.notes && (
-                    <div className="mt-4 p-4 rounded-2xl bg-blue-50 dark:bg-blue-900/10 text-blue-700 dark:text-blue-400 text-sm border border-blue-100 dark:border-blue-900/30">
-                      <strong className="block mb-1">💡 Notes from customer:</strong>
-                      {order.notes}
-                    </div>
-                  )}
-                  <div className="mt-6 pt-6 border-t dark:border-gray-700 flex justify-between items-center text-gray-500 text-sm">
-                    <span>Ordered on {new Date(order.createdAt).toLocaleDateString()} at {new Date(order.createdAt).toLocaleTimeString()}</span>
-                    <div className="text-right">
-                      <span className="block text-xs uppercase font-bold tracking-widest text-gray-400">Total Charged</span>
-                      <span className="text-3xl font-black text-[#3D5EA5] leading-none">{order.totalAmount} EGP</span>
                     </div>
                   </div>
                 </div>
-              ))
+
+                {/* Top Products */}
+                <div className="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-12 h-12 bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl flex items-center justify-center text-2xl">🏆</div>
+                    <div>
+                      <h3 className="text-xl font-black text-gray-800 dark:text-white">Best Selling Products</h3>
+                      <p className="text-gray-500 text-sm">Top 5 by quantity sold</p>
+                    </div>
+                  </div>
+                  <div className="space-y-6">
+                    {insights.topProducts.map((p: any) => (
+                      <div key={p._id} className="relative pt-6">
+                        <div className="flex justify-between items-end mb-2">
+                          <span className="text-sm font-bold text-gray-700 dark:text-gray-200 truncate pr-4 max-w-[70%]">{p.name}</span>
+                          <span className="text-xs font-black text-[#3D5EA5]">{p.totalQuantity} Sold</span>
+                        </div>
+                        <div className="h-2 w-full bg-gray-100 dark:bg-gray-900 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-linear-to-r from-[#3D5EA5] to-[#7B9FD4] rounded-full transition-all duration-1000"
+                            style={{ width: `${(p.totalQuantity / (insights.topProducts[0]?.totalQuantity || 1)) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                    {insights.topProducts.length === 0 && <p className="text-gray-400 text-center py-10 italic">No sales data yet</p>}
+                  </div>
+                </div>
+
+                {/* Popular Sizes */}
+                <div className="bg-white dark:bg-gray-800 p-8 rounded-[2.5rem] shadow-sm border border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="w-12 h-12 bg-purple-50 dark:bg-purple-900/20 rounded-2xl flex items-center justify-center text-2xl">📏</div>
+                    <div>
+                      <h3 className="text-xl font-black text-gray-800 dark:text-white">Most Sold Sizes</h3>
+                      <p className="text-gray-500 text-sm">Size distribution across orders</p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    {insights.topSizes.map((s: any) => (
+                      <div key={s._id} className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-2xl flex justify-between items-center group hover:bg-[#3D5EA5] transition-all cursor-default">
+                        <span className="font-black text-gray-600 dark:text-gray-400 group-hover:text-white">{s._id}</span>
+                        <div className="text-right">
+                          <p className="text-xl font-black text-gray-900 dark:text-white group-hover:text-white leading-none">{s.totalQuantity}</p>
+                          <p className="text-[10px] font-bold text-gray-400 group-hover:text-white/60">ITEMS</p>
+                        </div>
+                      </div>
+                    ))}
+                    {insights.topSizes.length === 0 && <p className="col-span-2 text-gray-400 text-center py-10 italic">No sizing data yet</p>}
+                  </div>
+                </div>
+              </div>
+            ) : (
+               <div className="bg-white dark:bg-gray-800 p-20 rounded-4xl text-center shadow-sm">
+                <span className="text-6xl animate-bounce inline-block">⏳</span>
+                <h3 className="text-xl font-bold mt-4 text-gray-400">Loading business insights...</h3>
+              </div>
             )}
           </div>
         ) : (
@@ -503,7 +686,7 @@ export default function App() {
                 {products.map(product => (
                   <div key={product._id} className="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden shadow-sm border border-gray-100 dark:border-gray-700 group hover:shadow-xl hover:shadow-[#3D5EA5]/5 transition-all">
                     <div className="relative aspect-4/5 overflow-hidden">
-                      <img src={getImageUrl(product.images[0])} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                      <img src={getImageUrl(product.images[0])} loading="lazy" decoding="async" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
                         <button
                           onClick={() => handleEditProduct(product)}

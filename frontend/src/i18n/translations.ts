@@ -24,6 +24,8 @@ export const translations = {
     outOfStock: 'غير متوفر',
     price: 'السعر',
     originalPrice: 'السعر الأصلي',
+    orderWhatsApp: 'طلب عبر واتساب',
+    whatsappMessage: 'مرحبا، أريد طلب هذا المنتج:\n\n📦 اسم المنتج: {name}\n📏 المقاس: {size}\n💰 السعر: {price} ج.م',
 
     // Cart
     yourCart: 'سلة المشتريات',
@@ -123,6 +125,8 @@ export const translations = {
     outOfStock: 'Out of Stock',
     price: 'Price',
     originalPrice: 'Original Price',
+    orderWhatsApp: 'Order via WhatsApp',
+    whatsappMessage: 'Hello, I would like to order this product:\n\n📦 Product Name: {name}\n📏 Size: {size}\n💰 Price: {price} EGP',
 
     // Cart
     yourCart: 'Your Cart',
