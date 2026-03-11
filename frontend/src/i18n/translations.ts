@@ -80,6 +80,21 @@ export const translations = {
     pants: 'بناطيل',
     all: 'الكل',
     backToProducts: 'العودة للمنتجات',
+
+    // Filters
+    filters: 'الفلاتر',
+    filterBy: 'تصفية حسب',
+    priceRange: 'نطاق السعر',
+    minPrice: 'أقل سعر',
+    maxPrice: 'أعلى سعر',
+    onSaleOnly: 'العروض فقط',
+    clearFilters: 'مسح الفلاتر',
+    showFilters: 'إظهار الفلاتر',
+    hideFilters: 'إخفاء الفلاتر',
+    resultsCount: 'منتج',
+    noResults: 'لا توجد منتجات مطابقة للفلاتر',
+    category: 'الفئة',
+    sizeFilter: 'المقاس',
   },
   en: {
     // Navbar
@@ -164,6 +179,21 @@ export const translations = {
     pants: 'Pants',
     all: 'All',
     backToProducts: 'Back to Products',
+
+    // Filters
+    filters: 'Filters',
+    filterBy: 'Filter by',
+    priceRange: 'Price Range',
+    minPrice: 'Min Price',
+    maxPrice: 'Max Price',
+    onSaleOnly: 'On Sale Only',
+    clearFilters: 'Clear Filters',
+    showFilters: 'Show Filters',
+    hideFilters: 'Hide Filters',
+    resultsCount: 'products',
+    noResults: 'No products match your filters',
+    category: 'Category',
+    sizeFilter: 'Size',
   },
 };
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Product } from '../types';
-import { API_BASE_URL } from '../api/config';
+import { API_BASE_URL, IMAGE_BASE_URL } from '../api/config';
 import { useNavigate } from 'react-router-dom';
 
 export function SearchBar({ onProductClick }: { onProductClick: (product: Product) => void }) {
@@ -57,7 +57,7 @@ export function SearchBar({ onProductClick }: { onProductClick: (product: Produc
         <ul className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-lg shadow-lg">
           {suggestions.map((product) => (
             <li key={product._id} onClick={() => handleSuggestionClick(product)} className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
-              <img src={product.images[0]} alt={product.nameEn} className="w-12 h-12 object-cover mr-4" />
+              <img src={product.images[0]?.startsWith('http') ? product.images[0] : `${IMAGE_BASE_URL}${product.images[0]}`} alt={product.nameEn} className="w-12 h-12 object-cover rounded-lg mr-4" />
               <div>
                 <div className="font-semibold">{product.nameEn}</div>
                 <div className="text-sm text-gray-500">{product.price} EGP</div>
