@@ -1,11 +1,15 @@
 import mongoose from 'mongoose';
 
 const visitorSchema = new mongoose.Schema({
-    ip: {
+    visitorId: {
         type: String,
         required: true,
         unique: true,
         index: true
+    },
+    ip: {
+        type: String,
+        required: false
     },
     lastVisit: {
         type: Date,

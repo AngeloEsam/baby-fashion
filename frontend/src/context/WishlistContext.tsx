@@ -2,6 +2,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { Product } from '../types';
 import { API_BASE_URL } from '../api/config';
+import { useApp } from './AppContext';
 
 interface WishlistContextType {
   wishlist: Product[];
@@ -15,11 +16,17 @@ const WishlistContext = createContext<WishlistContextType | undefined>(undefined
 
 export function WishlistProvider({ children }: { children: ReactNode }) {
   const [wishlist, setWishlist] = useState<Product[]>([]);
+  const { visitorId } = useApp();
 
   useEffect(() => {
     const fetchWishlist = async () => {
+      if (!visitorId) return;
       try {
-        const response = await fetch(`${API_BASE_URL}/wishlist`);
+        const response = await fetch(`${API_BASE_URL}/wishlist`, {
+          headers: {
+            'x-visitor-id': visitorId
+          }
+        });
         const data = await response.json();
         setWishlist(data);
       } catch (error) {
@@ -28,7 +35,18 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     };
 
     fetchWishlist();
-  }, []);
+  }, [visitorId]); // Added visitorId to dependency array for initial fetch
+
+  useEffect(() => {
+    if (!visitorId) return;
+    fetch(`${API_BASE_URL}/analytics/track`, {
+      method: 'POST',
+      headers: {
+        'x-visitor-id': visitorId
+      }
+    })
+      .catch(err => console.error('Tracking error:', err));
+  }, [visitorId]);
 
   const addToWishlist = async (product: Product) => {
     try {
@@ -36,6 +54,7 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-visitor-id': visitorId
         },
         body: JSON.stringify({ productId: product._id }),
       });
@@ -49,6 +68,9 @@ export function WishlistProvider({ children }: { children: ReactNode }) {
     try {
       await fetch(`${API_BASE_URL}/wishlist/${productId}`, {
         method: 'DELETE',
+        headers: {
+          'x-visitor-id': visitorId
+        }
       });
       setWishlist(wishlist.filter(p => p._id !== productId));
     } catch (error) {

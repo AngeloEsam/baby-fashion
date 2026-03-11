@@ -16,23 +16,40 @@ interface AppContextType {
   clearCart: () => void;
   cartTotal: number;
   cartCount: number;
+  visitorId: string;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
+
+// Helper for UUID generation
+const generateUUID = () => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+};
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>('en');
   const [theme, setTheme] = useState<Theme>('light');
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [visitorId, setVisitorId] = useState<string>('');
 
   useEffect(() => {
     const savedLang = localStorage.getItem('language') as Language;
     const savedTheme = localStorage.getItem('theme') as Theme;
     const savedCart = localStorage.getItem('cart');
+    let savedVisitorId = localStorage.getItem('visitorId');
+
+    if (!savedVisitorId) {
+      savedVisitorId = generateUUID();
+      localStorage.setItem('visitorId', savedVisitorId);
+    }
 
     if (savedLang) setLanguage(savedLang);
     if (savedTheme) setTheme(savedTheme);
     if (savedCart) setCart(JSON.parse(savedCart));
+    setVisitorId(savedVisitorId);
   }, []);
 
   useEffect(() => {
@@ -104,6 +121,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         clearCart,
         cartTotal,
         cartCount,
+        visitorId,
       }}
     >
       {children}

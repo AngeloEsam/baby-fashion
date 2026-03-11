@@ -5,11 +5,15 @@ import Visitor from '../models/Visitor.js';
 // Get wishlist for a visitor
 export const getWishlist = async (req, res) => {
     try {
-        const visitorIp = req.ip;
-        let visitor = await Visitor.findOne({ ip: visitorIp });
+        const visitorId = req.headers['x-visitor-id'];
+        if (!visitorId) {
+            return res.status(400).json({ error: 'Visitor ID required' });
+        }
+
+        let visitor = await Visitor.findOne({ visitorId });
 
         if (!visitor) {
-            visitor = new Visitor({ ip: visitorIp });
+            visitor = new Visitor({ visitorId, ip: req.ip });
             await visitor.save();
         }
 
@@ -28,11 +32,15 @@ export const getWishlist = async (req, res) => {
 export const addToWishlist = async (req, res) => {
     try {
         const { productId } = req.body;
-        const visitorIp = req.ip;
-        let visitor = await Visitor.findOne({ ip: visitorIp });
+        const visitorId = req.headers['x-visitor-id'];
+        if (!visitorId) {
+            return res.status(400).json({ error: 'Visitor ID required' });
+        }
+
+        let visitor = await Visitor.findOne({ visitorId });
 
         if (!visitor) {
-            visitor = new Visitor({ ip: visitorIp });
+            visitor = new Visitor({ visitorId, ip: req.ip });
             await visitor.save();
         }
 
@@ -57,8 +65,8 @@ export const addToWishlist = async (req, res) => {
 export const removeFromWishlist = async (req, res) => {
     try {
         const { productId } = req.params;
-        const visitorIp = req.ip;
-        const visitor = await Visitor.findOne({ ip: visitorIp });
+        const visitorId = req.headers['x-visitor-id'];
+        const visitor = await Visitor.findOne({ visitorId });
 
         if (visitor) {
             await Wishlist.updateOne(

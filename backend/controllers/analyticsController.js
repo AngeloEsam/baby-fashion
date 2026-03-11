@@ -5,17 +5,21 @@ import Order from '../models/Order.js';
 // @route   POST /api/analytics/track
 export const trackVisit = async (req, res, next) => {
     try {
-        // Get IP from headers (behind proxy) or connection.remoteAddress
-        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-
-        if (!ip) {
-            return res.status(400).json({ error: 'IP address not found' });
+        const visitorId = req.headers['x-visitor-id'];
+        if (!visitorId) {
+            return res.status(400).json({ error: 'Visitor ID required' });
         }
+
+        const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
 
         // Upsert to ensure uniqueness and update timestamp
         await Visitor.findOneAndUpdate(
-            { ip },
-            { lastVisit: new Date() },
+            { visitorId },
+            { 
+                visitorId,
+                ip,
+                lastVisit: new Date() 
+            },
             { upsert: true, new: true }
         );
 
