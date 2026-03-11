@@ -134,7 +134,7 @@ export function CartDrawer({ isOpen, onClose, onCheckout }: CartDrawerProps) {
               </div>
               <button
                 onClick={onCheckout}
-                className="w-full py-4 bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] text-white font-bold rounded-xl hover:shadow-lg hover:shadow-[#3D5EA5]/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
+                className="w-full py-4 bg-linear-to-r from-[#3D5EA5] to-[#2E3A42] text-white font-bold rounded-xl hover:shadow-lg hover:shadow-[#3D5EA5]/30 transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 {t('checkout')}
               </button>

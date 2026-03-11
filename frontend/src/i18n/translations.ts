@@ -87,6 +87,8 @@ export const translations = {
     products: 'Products',
     contact: 'Contact',
     cart: 'Cart',
+    wishlist: 'Wishlist',
+    wishlistEmpty: 'Your wishlist is empty.',
     darkMode: 'Dark Mode',
     lightMode: 'Light Mode',
     language: 'العربية',

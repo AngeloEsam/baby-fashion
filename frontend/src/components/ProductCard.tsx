@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { useWishlist } from '../context/WishlistContext';
 import { Product } from '../types';
 import { translations } from '../i18n/translations';
 import { IMAGE_BASE_URL } from '../api/config';
@@ -19,6 +20,7 @@ interface ProductCardProps {
 
 export function ProductCard({ product, onProductClick }: ProductCardProps) {
   const { language, addToCart } = useApp();
+  const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
   const [selectedSize, setSelectedSize] = useState(product.sizes[0] || '');
   const [showSizeAlert, setShowSizeAlert] = useState(false);
 
@@ -47,13 +49,41 @@ export function ProductCard({ product, onProductClick }: ProductCardProps) {
       onClick={() => onProductClick(product)}
     >
       {/* Image Section */}
-      <div className="relative aspect-[4/5] overflow-hidden bg-gray-100 dark:bg-gray-700">
+      <div className="relative aspect-4/5 overflow-hidden bg-gray-100 dark:bg-gray-700">
         <img
           src={getImageUrl(product.images[0])}
           alt={language === 'ar' ? product.nameAr : product.nameEn}
           loading="lazy"
           className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
         />
+
+        {/* Wishlist Button */}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            if (isInWishlist(product._id)) {
+              removeFromWishlist(product._id);
+            } else {
+              addToWishlist(product);
+            }
+          }}
+          className="absolute top-3 right-3 p-2 bg-white/80 dark:bg-gray-800/80 rounded-full text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-all duration-300 z-10"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className={`h-6 w-6 ${isInWishlist(product._id) ? 'text-red-500' : ''}`}
+            fill={isInWishlist(product._id) ? 'currentColor' : 'none'}
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.682l1.318-1.364a4.5 4.5 0 016.364 6.364L12 20.364l-7.682-7.682a4.5 4.5 0 010-6.364z"
+            />
+          </svg>
+        </button>
 
         {/* Sale Badge */}
         {product.isSale && (
@@ -127,7 +157,7 @@ export function ProductCard({ product, onProductClick }: ProductCardProps) {
         <button
           onClick={handleAddToCart}
           disabled={!product.inStock}
-          className="w-full py-3 bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-[#3D5EA5]/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+          className="w-full py-3 bg-linear-to-r from-[#3D5EA5] to-[#2E3A42] text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-[#3D5EA5]/30 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
         >
           {product.inStock ? t('addToCart') : t('outOfStock')}
         </button>

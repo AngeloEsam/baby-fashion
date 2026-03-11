@@ -7,6 +7,7 @@ import {
     createProduct,
     updateProduct,
     deleteProduct,
+    searchProducts,
     seedProducts
 } from '../controllers/productController.js';
 
@@ -17,6 +18,8 @@ router.route('/')
     .post(auth, upload.array('images', 5), createProduct);
 
 router.post('/seed', auth, seedProducts);
+
+router.get('/search', searchProducts);
 
 router.route('/:id')
     .get(getProduct)

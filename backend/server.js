@@ -12,6 +12,7 @@ import productRoutes from './routes/productRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import analyticsRoutes from './routes/analyticsRoutes.js';
+import wishlistRoutes from './routes/wishlistRoutes.js';
 import errorHandler from './middleware/errorHandler.js';
 
 // Connect to MongoDB
@@ -21,7 +22,11 @@ connectDB();
 const app = express();
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: ['http://localhost:5173', 'http://localhost:5174'],
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Static folder for uploads - with long term caching for performance
@@ -37,6 +42,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/wishlist', wishlistRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

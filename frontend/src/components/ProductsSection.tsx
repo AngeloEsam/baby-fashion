@@ -91,7 +91,7 @@ export function ProductsSection({ onProductClick }: ProductsSectionProps) {
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-white mb-4">
             {t('allProducts')}
           </h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] mx-auto rounded-full"></div>
+          <div className="w-24 h-1 bg-linear-to-r from-[#3D5EA5] to-[#2E3A42] mx-auto rounded-full"></div>
         </div>
 
         {/* Category Filter */}
@@ -101,7 +101,7 @@ export function ProductsSection({ onProductClick }: ProductsSectionProps) {
               key={category}
               onClick={() => setSelectedCategory(category)}
               className={`px-5 py-2 rounded-full font-medium transition-all duration-300 ${selectedCategory === category
-                ? 'bg-gradient-to-r from-[#3D5EA5] to-[#2E3A42] text-white shadow-lg shadow-[#3D5EA5]/30'
+                ? 'bg-linear-to-r from-[#3D5EA5] to-[#2E3A42] text-white shadow-lg shadow-[#3D5EA5]/30'
                 : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-[#E4DFCA] dark:hover:bg-[#3D5EA5]/20'
                 }`}
             >

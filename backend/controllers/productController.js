@@ -299,3 +299,23 @@ export const seedProducts = async (req, res, next) => {
         next(error);
     }
 };
+
+// @desc    Search products
+// @route   GET /api/products/search
+export const searchProducts = async (req, res, next) => {
+    try {
+        const { q } = req.query;
+        if (!q) {
+            return res.json([]);
+        }
+
+        const products = await Product.find(
+            { $text: { $search: q } },
+            { score: { $meta: 'textScore' } }
+        ).sort({ score: { $meta: 'textScore' } });
+
+        res.json(products);
+    } catch (error) {
+        next(error);
+    }
+};
